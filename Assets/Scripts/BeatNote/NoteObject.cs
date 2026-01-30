@@ -6,10 +6,11 @@ using UnityEngine;
 public class NoteObject : MonoBehaviour
 {
     [SerializeField] private float delayBeforeDestroy = 0.2f;
-    private bool canBePressed;
-    public static event Action OnNoteHit;
-    public static event Action OnNoteHitPerfect;
-    public static event Action OnNoteMiss;
+    [SerializeField] private float perfectHitAcceptableThreshold = 0.08f;
+    [SerializeField] private float hitAcceptableThreshold = 0.15f;
+    public static event Action<int> OnNoteHit;
+    public static event Action<int> OnNoteHitPerfect;
+    public static event Action<int> OnNoteMiss;
     private Transform spawnPoint;
     private Transform hitPoint;
     private float travelTime;
@@ -25,6 +26,35 @@ public class NoteObject : MonoBehaviour
         travelTime = travel;
     }
 
+    void OnEnable()
+    {
+        ButtonController.OnPlayerHit += HandlePlayerHit;
+    }
+
+    void OnDisable()
+    {
+        ButtonController.OnPlayerHit -= HandlePlayerHit;
+    }
+
+    void HandlePlayerHit(int inputLane)
+    {
+        if (inputLane != laneIndex)
+            return;
+        float songTime = Conductor.Instance.songPositionSeconds;
+        float offset = songTime - hitTime;
+        float absOffset = Mathf.Abs(songTime - hitTime);
+
+        // Debug.Log($"[NOTE CHECK] Lane: {laneIndex} | Offset: {offset:F4}s | AbsOffset: {absOffset:F4}s");
+
+        if (absOffset < 0.25f) 
+        {
+            if (absOffset < 0.12f) OnNoteHitPerfect?.Invoke(laneIndex);
+            else OnNoteHit?.Invoke(laneIndex);
+
+            Destroy(gameObject);
+        }
+    }
+
     void Update()
     {
         float songTime = Conductor.Instance.songPositionSeconds;
@@ -37,60 +67,27 @@ public class NoteObject : MonoBehaviour
 
         if (songTime - hitTime > 0.15f)
         {
-            OnNoteMiss?.Invoke();
-            gameObject.SetActive(false);
+            OnNoteMiss?.Invoke(laneIndex);
             Destroy(gameObject, delayBeforeDestroy);
         }
     }
-    void OnEnable()
+
+    public bool TryHit()
     {
-        ButtonController.OnPlayerHit += OnNoteEnterPlayer;
-    }
+        float songTime = Conductor.Instance.songPositionSeconds;
+        float offset = songTime - hitTime;
+        float absOffset = Mathf.Abs(songTime - hitTime);
 
-    void OnDisable()
-    {
-        ButtonController.OnPlayerHit -= OnNoteEnterPlayer;
-    }
+        // Debug.Log($"[NOTE CHECK] Lane: {laneIndex} | Offset: {offset:F4}s | AbsOffset: {absOffset:F4}s");
 
-    private void OnNoteEnterPlayer(int lane)
-    {
-        if (!canBePressed || lane != laneIndex)
-            return;
-
-        float offset = Mathf.Abs(Conductor.Instance.songPositionSeconds - hitTime);
-
-        if (offset < 0.08f)
+        if (absOffset < hitAcceptableThreshold) 
         {
-            Debug.Log("Perfect");
-            OnNoteHitPerfect?.Invoke();
-        }
-        else if (offset < 0.15f)
-        {
-            Debug.Log("Hit");
-            OnNoteHit?.Invoke();
-        }
-        else
-        {
-            Debug.Log("Missing");
-            OnNoteMiss?.Invoke();
-        }
+            if (absOffset < perfectHitAcceptableThreshold) OnNoteHitPerfect?.Invoke(laneIndex);
+            else OnNoteHit?.Invoke(laneIndex);
 
-        gameObject.SetActive(false);
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.tag.Equals("Activator"))
-        {
-            canBePressed = true;
+            Destroy(gameObject);
+            return true; 
         }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.tag.Equals("Activator"))
-        {
-            canBePressed = false;
-        }
+        return false;
     }
 }

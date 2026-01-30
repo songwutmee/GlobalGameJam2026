@@ -122,8 +122,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayBeforeDestroy: 0.2
-  conductorObject: {fileID: 8993612733168341383, guid: ba3154ccfb30fec49928e55b8034b11c,
-    type: 3}
+  perfectHitAcceptableThreshold: 0.08
+  hitAcceptableThreshold: 0.16
 --- !u!54 &998141386657238123
 Rigidbody:
   m_ObjectHideFlags: 0

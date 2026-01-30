@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SongData
   musicClip: {fileID: 8300000, guid: 943b1954cf80c8d4c88db692b6d84601, type: 3}
   bpm: 104.99992
-  firstBeatOffset: 1
+  firstBeatOffset: 0
   notes:
   - timeInSeconds: 2.285716
     laneIndex: 0

@@ -31,7 +31,7 @@ public class BattleManager : MonoBehaviour
         NoteObject.OnNoteMiss -= HandleNoteMiss;
     }
 
-    private void HandleNoteHit()
+    private void HandleNoteHit(int lane)
     {
         currentEnemyStats.TakeDamage(damageToEnemyNormal);
         BattleEvents.TriggerPlayerAttack(false); // Normal Attack
@@ -39,7 +39,7 @@ public class BattleManager : MonoBehaviour
         CheckEnemyDeath();
     }
 
-    private void HandleNoteHitPerfect()
+    private void HandleNoteHitPerfect(int lane)
     {
         currentEnemyStats.TakeDamage(damageToEnemyPerfect);
         BattleEvents.TriggerPlayerAttack(true); // Perfect Attack
@@ -47,7 +47,7 @@ public class BattleManager : MonoBehaviour
         CheckEnemyDeath();
     }
 
-    private void HandleNoteMiss()
+    private void HandleNoteMiss(int lane)
     {
         playerStats.TakeDamage(damageToPlayer);
         BattleEvents.TriggerPlayerHurt();
