@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class Conductor : MonoBehaviour {
+public class Conductor : MonoBehaviour
+{
     public static Conductor Instance;
     public SongData songData;
     public AudioSource musicSource;
@@ -8,17 +9,24 @@ public class Conductor : MonoBehaviour {
     public float songPositionSeconds;
     public float dspSongTime;
 
-    private void Awake() => Instance = this;
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
-    void Start() {
+    void Start()
+    {
         if (songData == null) return;
         musicSource.clip = songData.musicClip;
         dspSongTime = (float)AudioSettings.dspTime;
         musicSource.Play();
     }
 
-    void Update() {
-        if (musicSource.isPlaying) {
+    void Update()
+    {
+        if (musicSource.isPlaying)
+        {
             // เวลาปัจจุบัน = (เวลาจริง - เวลาเริ่ม) - ค่าชดเชย
             songPositionSeconds = (float)(AudioSettings.dspTime - dspSongTime) - songData.firstBeatOffset;
         }
