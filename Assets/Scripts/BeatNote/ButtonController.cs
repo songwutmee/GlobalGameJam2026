@@ -17,7 +17,7 @@ public class ButtonController : MonoBehaviour
 {
     private PlayerInputActions inputActions;
     private InputAction press;
-    public static event Action<NoteType> OnPlayerHit;
+    public static event Action<int> OnPlayerHit;
 
     private void Awake()
     {
@@ -26,22 +26,21 @@ public class ButtonController : MonoBehaviour
     private void OnEnable()
     {
         inputActions.Control.Enable();
-        inputActions.Control.LeftD.performed += _ => Emit(NoteType.LeftD);
-        inputActions.Control.LeftF.performed += _ => Emit(NoteType.LeftF);
-        inputActions.Control.RightJ.performed += _ => Emit(NoteType.RightJ);
-        inputActions.Control.RightK.performed += _ => Emit(NoteType.RightK);
+        inputActions.Control.LeftD.performed += _ => Emit(0);
+        inputActions.Control.LeftF.performed += _ => Emit(1);
+        inputActions.Control.RightJ.performed += _ => Emit(2);
+        inputActions.Control.RightK.performed += _ => Emit(3);
     }
     private void OnDisable()
     {
-        inputActions.Control.LeftD.performed -= _ => Emit(NoteType.LeftD);
-        inputActions.Control.LeftF.performed -= _ => Emit(NoteType.LeftF);
-        inputActions.Control.RightJ.performed -= _ => Emit(NoteType.RightJ);
-        inputActions.Control.RightK.performed -= _ => Emit(NoteType.RightK);
+        inputActions.Control.LeftD.performed -= _ => Emit(0);
+        inputActions.Control.LeftF.performed -= _ => Emit(1);
+        inputActions.Control.RightJ.performed -= _ => Emit(2);
+        inputActions.Control.RightK.performed -= _ => Emit(3);
         inputActions.Control.Disable();
     }
-    void Emit(NoteType type)
+    void Emit(int lane)
     {
-        Debug.Log("Hit with" + type);
-        OnPlayerHit?.Invoke(type);
+        OnPlayerHit?.Invoke(lane);
     }
 }
