@@ -65,9 +65,15 @@ public class NoteObject : MonoBehaviour
             OnNoteHitPerfect?.Invoke();
         }
         else if (offset < 0.15f)
+        {
+            Debug.Log("Hit");
             OnNoteHit?.Invoke();
+        }
         else
+        {
+            Debug.Log("Missing");
             OnNoteMiss?.Invoke();
+        }
 
         gameObject.SetActive(false);
     }
