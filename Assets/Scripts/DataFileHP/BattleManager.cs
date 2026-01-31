@@ -16,6 +16,13 @@ public class BattleManager : MonoBehaviour
     [Header("UI References")]
     public GameObject winUI; // UI Continue
 
+    private void Start()
+    {
+        // ต้อง Reset เลือดทุกครั้งที่เริ่มฉาก
+        if (playerStats != null) playerStats.Initialize();
+        if (currentEnemyStats != null) currentEnemyStats.Initialize();
+    }
+
     private void OnEnable()
     {
         // Subscribe to your NoteObject Static Events
@@ -49,9 +56,15 @@ public class BattleManager : MonoBehaviour
 
     private void HandleNoteMiss(int lane)
     {
+        Debug.Log($"Player currently has {playerStats.currentHp} HP before taking damage.");
         playerStats.TakeDamage(damageToPlayer);
+        Debug.Log($"Damaged Player for {damageToPlayer} HP");
+        Debug.Log($"Player currently has {playerStats.currentHp} HP after taking damage.");
+
         BattleEvents.TriggerPlayerHurt();
         BattleEvents.TriggerEnemyAttack();
+
+        CheckPlayerDeath();
     }
 
     private void CheckEnemyDeath()
@@ -60,6 +73,16 @@ public class BattleManager : MonoBehaviour
         {
             winUI.SetActive(true);
             // หยุดเพลงหรือทำอย่างอื่นตามต้องการ
+        }
+    }
+
+    private void CheckPlayerDeath()
+    {
+        if (playerStats.currentHp <= 0)
+        {
+            Debug.Log("Game Over");
+            winUI.SetActive(true);
+            // ใส่ UI Lose ตรงนี้
         }
     }
 }

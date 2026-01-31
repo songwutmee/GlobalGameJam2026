@@ -1,52 +1,69 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
+
+[Serializable]
+public struct ComboThreshold
+{
+    public int minCombo;
+    public string badgeName;
+}
 
 public class ComboManager : MonoBehaviour
 {
-    private int perfectComboCount = 0;
-    private int normalComboCount = 0;
+    [SerializeField] TextMeshProUGUI comboText;
+    [SerializeField] TextMeshProUGUI badgeText;
+    [Header("Combo Settings")]
+    [SerializeField] List<ComboThreshold> thresholds;
+    private int currentCombo = 0;
     private bool isNoteMissed = false;
     private void OnEnable()
     {
-        NoteObject.OnNoteHit += HandleNoteHit;
-        NoteObject.OnNoteHitPerfect += HandleNoteHitPerfect;
+        NoteObject.OnNoteHit += HandleHit;
+        NoteObject.OnNoteHitPerfect += HandleHit; 
         NoteObject.OnNoteMiss += HandleNoteMiss;
     }
 
     private void OnDisable()
     {
-        NoteObject.OnNoteHit -= HandleNoteHit;
-        NoteObject.OnNoteHitPerfect -= HandleNoteHitPerfect;
+        NoteObject.OnNoteHit -= HandleHit;
+        NoteObject.OnNoteHitPerfect -= HandleHit;
         NoteObject.OnNoteMiss -= HandleNoteMiss;
     }
 
-    private void HandleNoteHit(int lane)
+    private void HandleHit(int lane)
     {
-        if(isNoteMissed)
-        {
-            isNoteMissed = false;
-            return;
-        }
-        normalComboCount++;
-        perfectComboCount = 0;
-    }
-
-    private void HandleNoteHitPerfect(int lane)
-    {
-        if(isNoteMissed)
-        {
-            isNoteMissed = false;
-            return;
-        }
-        perfectComboCount++;
-        normalComboCount = 0;
+        currentCombo++;
+        UpdateComboUI();
     }
 
     private void HandleNoteMiss(int lane)
     {
-        perfectComboCount = 0;
-        normalComboCount = 0;
-        isNoteMissed = true;
+        currentCombo = 0;
+        UpdateComboUI();
+    }
+
+    private void UpdateComboUI()
+    {
+        if (currentCombo <= 0)
+        {
+            if (badgeText) badgeText.text = "";
+            return;
+        }
+
+        ComboThreshold currentBadge = thresholds
+            .OrderByDescending(t => t.minCombo)
+            .FirstOrDefault(t => currentCombo >= t.minCombo);
+
+        if (currentBadge.badgeName != null)
+        {
+            if (badgeText)
+            {
+                badgeText.text = currentBadge.badgeName;
+            }
+        }
     }
 }

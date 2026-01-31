@@ -44,12 +44,11 @@ public class NoteObject : MonoBehaviour
         float offset = songTime - hitTime;
         float absOffset = Mathf.Abs(songTime - hitTime);
 
-        // Debug.Log($"[NOTE CHECK] Lane: {laneIndex} | Offset: {offset:F4}s | AbsOffset: {absOffset:F4}s");
-
         if (absOffset < 0.25f) 
         {
             if (absOffset < 0.12f) OnNoteHitPerfect?.Invoke(laneIndex);
             else OnNoteHit?.Invoke(laneIndex);
+            gameObject.SetActive(false);
 
             Destroy(gameObject);
         }
@@ -68,26 +67,8 @@ public class NoteObject : MonoBehaviour
         if (songTime - hitTime > 0.15f)
         {
             OnNoteMiss?.Invoke(laneIndex);
+            gameObject.SetActive(false);
             Destroy(gameObject, delayBeforeDestroy);
         }
-    }
-
-    public bool TryHit()
-    {
-        float songTime = Conductor.Instance.songPositionSeconds;
-        float offset = songTime - hitTime;
-        float absOffset = Mathf.Abs(songTime - hitTime);
-
-        // Debug.Log($"[NOTE CHECK] Lane: {laneIndex} | Offset: {offset:F4}s | AbsOffset: {absOffset:F4}s");
-
-        if (absOffset < hitAcceptableThreshold) 
-        {
-            if (absOffset < perfectHitAcceptableThreshold) OnNoteHitPerfect?.Invoke(laneIndex);
-            else OnNoteHit?.Invoke(laneIndex);
-
-            Destroy(gameObject);
-            return true; 
-        }
-        return false;
     }
 }
