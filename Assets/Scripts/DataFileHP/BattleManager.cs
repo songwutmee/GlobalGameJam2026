@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -14,18 +12,27 @@ public class BattleManager : MonoBehaviour
     public float damageToPlayer = 15f;
 
     [Header("UI References")]
-    public GameObject winUI; // UI Continue
+    public GameObject winUI;  
+    public GameObject loseUI; 
+
+    private bool isGameOver = false;
 
     private void Awake()
     {
-        // ต้อง Reset เลือดทุกครั้งที่เริ่มฉาก
+        isGameOver = false;
         if (playerStats != null) playerStats.Initialize();
         if (currentEnemyStats != null) currentEnemyStats.Initialize();
     }
 
+    private void Start()
+    {
+        // ปิด UI ทั้งหมดตอนเริ่ม
+        if (winUI != null) winUI.SetActive(false);
+        if (loseUI != null) loseUI.SetActive(false);
+    }
+
     private void OnEnable()
     {
-        // Subscribe to your NoteObject Static Events
         NoteObject.OnNoteHit += HandleNoteHit;
         NoteObject.OnNoteHitPerfect += HandleNoteHitPerfect;
         NoteObject.OnNoteMiss += HandleNoteMiss;
@@ -40,56 +47,71 @@ public class BattleManager : MonoBehaviour
 
     private void HandleNoteHit(int lane)
     {
+        if (isGameOver) return; 
+
         currentEnemyStats.TakeDamage(damageToEnemyNormal);
-        BattleEvents.TriggerPlayerAttack(false); // Normal Attack
+        BattleEvents.TriggerPlayerAttack(false); 
         BattleEvents.TriggerEnemyHurt();
         CheckEnemyDeath();
     }
 
     private void HandleNoteHitPerfect(int lane)
     {
+        if (isGameOver) return;
+
         currentEnemyStats.TakeDamage(damageToEnemyPerfect);
-        BattleEvents.TriggerPlayerAttack(true); // Perfect Attack
+        BattleEvents.TriggerPlayerAttack(true); 
         BattleEvents.TriggerEnemyHurt();
         CheckEnemyDeath();
     }
 
     private void HandleNoteMiss(int lane)
     {
-        Debug.Log($"Player currently has {playerStats.currentHp} HP before taking damage.");
-        playerStats.TakeDamage(damageToPlayer);
-        Debug.Log($"Damaged Player for {damageToPlayer} HP");
-        Debug.Log($"Player currently has {playerStats.currentHp} HP after taking damage.");
+        if (isGameOver) return;
 
+        playerStats.TakeDamage(damageToPlayer);
         BattleEvents.TriggerPlayerHurt();
         BattleEvents.TriggerEnemyAttack();
-
         CheckPlayerDeath();
     }
 
     private void CheckEnemyDeath()
     {
-        if (currentEnemyStats.currentHp <= 0)
+        if (currentEnemyStats.currentHp <= 0 && !isGameOver)
         {
-            winUI.SetActive(true);
-            // หยุดเพลงหรือทำอย่างอื่นตามต้องการ
+            isGameOver = true;
+            Debug.Log("<color=green>[BATTLE] Victory!</color>");
+            if (winUI != null) winUI.SetActive(true);
+            
+            // stio music when win
+            StopMusic();
         }
     }
 
     private void CheckPlayerDeath()
     {
-        if (playerStats.currentHp <= 0)
+        if (playerStats.currentHp <= 0 && !isGameOver)
         {
-            Debug.Log("Game Over");
-            winUI.SetActive(true);
-            // ใส่ UI Lose ตรงนี้
+            isGameOver = true;
+            Debug.Log("<color=red>[BATTLE] Player Defeated!</color>");
+            if (loseUI != null) loseUI.SetActive(true);
+            
+            // stop music when lose
+            StopMusic();
+        }
+    }
+
+    private void StopMusic()
+    {
+        if (Conductor.Instance != null && Conductor.Instance.musicSource != null)
+        {
+            Conductor.Instance.musicSource.Stop();
         }
     }
 }
 
-// Internal Event สำหรับสื่อสารกับ Animator/Visual
 public static class BattleEvents {
-    public static System.Action<bool> OnPlayerAttack; // true = perfect
+    public static System.Action<bool> OnPlayerAttack; 
     public static System.Action OnPlayerHurt;
     public static System.Action OnEnemyAttack;
     public static System.Action OnEnemyHurt;

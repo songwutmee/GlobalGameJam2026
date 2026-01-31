@@ -1,21 +1,20 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NoteObject : MonoBehaviour
 {
     [SerializeField] private float delayBeforeDestroy = 0.2f;
-    [SerializeField] private float perfectHitAcceptableThreshold = 0.08f;
-    [SerializeField] private float hitAcceptableThreshold = 0.15f;
     public static event Action<int> OnNoteHit;
     public static event Action<int> OnNoteHitPerfect;
     public static event Action<int> OnNoteMiss;
+
     private Transform spawnPoint;
     private Transform hitPoint;
     private float travelTime;
     private float hitTime;
     private int laneIndex;
+    
+    private bool isHandled = false; 
 
     public void Initialize(float targetTime, int lane, Transform spawn, Transform hit, float travel)
     {
@@ -24,6 +23,7 @@ public class NoteObject : MonoBehaviour
         spawnPoint = spawn;
         hitPoint = hit;
         travelTime = travel;
+        isHandled = false;
     }
 
     void OnEnable()
@@ -38,36 +38,41 @@ public class NoteObject : MonoBehaviour
 
     void HandlePlayerHit(int inputLane)
     {
-        if (inputLane != laneIndex)
-            return;
+        if (isHandled || inputLane != laneIndex) return;
+
         float songTime = Conductor.Instance.songPositionSeconds;
-        float offset = songTime - hitTime;
         float absOffset = Mathf.Abs(songTime - hitTime);
 
         if (absOffset < 0.25f) 
         {
+            isHandled = true; 
+            
             if (absOffset < 0.12f) OnNoteHitPerfect?.Invoke(laneIndex);
             else OnNoteHit?.Invoke(laneIndex);
+            
             gameObject.SetActive(false);
-
             Destroy(gameObject);
         }
     }
 
     void Update()
     {
-        float songTime = Conductor.Instance.songPositionSeconds;
+        if (isHandled || Conductor.Instance == null) return;
 
+        float songTime = Conductor.Instance.songPositionSeconds;
         float timeUntilHit = hitTime - songTime;
         float progress = 1f - (timeUntilHit / travelTime);
         progress = Mathf.Clamp01(progress);
 
         transform.position = Vector3.Lerp(spawnPoint.position, hitPoint.position, progress);
 
+        // (Miss)
         if (songTime - hitTime > 0.15f)
         {
+            isHandled = true; 
             OnNoteMiss?.Invoke(laneIndex);
-            gameObject.SetActive(false);
+            
+            if (TryGetComponent<Renderer>(out Renderer r)) r.enabled = false;
             Destroy(gameObject, delayBeforeDestroy);
         }
     }
