@@ -4,12 +4,14 @@ using UnityEngine.SceneManagement; // เพิ่มเพื่อใช้โ
 
 public class PauseManager : MonoBehaviour
 {
+    [SerializeField] private TMPro.TextMeshProUGUI countdownText;
     public GameObject pausePanel;
     [SerializeField] private float fadeDuration = 0.3f; 
     [SerializeField] private string mainMenuSceneName = "MainMenu"; // ตั้งชื่อฉากเมนูหลักที่นี่
+    private bool isPaused = false;
+    private bool isTransitioning = false;
     
     private CanvasGroup canvasGroup;
-    private bool isPaused = false;
     private Coroutine fadeCoroutine;
 
     void Awake()
@@ -23,6 +25,7 @@ public class PauseManager : MonoBehaviour
 
     void Update()
     {
+        if (isTransitioning) return;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused) Resume();
@@ -32,6 +35,8 @@ public class PauseManager : MonoBehaviour
 
     public void Resume()
     {
+        if (isTransitioning) return;
+        StartCoroutine(ResumeCountdown());
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
         
         isPaused = false;
@@ -48,6 +53,9 @@ public class PauseManager : MonoBehaviour
 
     public void Pause()
     {
+        pausePanel.SetActive(true);
+        Time.timeScale = 0f;
+        isPaused = true;
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
 
         isPaused = true;
@@ -57,7 +65,7 @@ public class PauseManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
 
         if (Conductor.Instance != null && Conductor.Instance.musicSource != null)
-            Conductor.Instance.musicSource.Pause();
+            Conductor.Instance.PauseSong();
 
         pausePanel.SetActive(true);
         fadeCoroutine = StartCoroutine(FadePauseMenu(1f, true));
@@ -83,6 +91,35 @@ public class PauseManager : MonoBehaviour
         Debug.Log("Exiting to Main Menu...");
         SceneManager.LoadScene(mainMenuSceneName);
     }
+    private IEnumerator ResumeCountdown()
+    {
+        isTransitioning = true;
+        countdownText.gameObject.SetActive(true);
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        Time.timeScale = 0f;
+        pausePanel.SetActive(false);
+
+        for (int i = 3; i > 0; i--)
+        {
+            countdownText.text = i.ToString();
+            yield return new WaitForSecondsRealtime(1f);
+        }
+
+        countdownText.text = "GO!";
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        countdownText.gameObject.SetActive(false);
+
+        Time.timeScale = 1f;
+        isPaused = false;
+
+        if (Conductor.Instance != null && Conductor.Instance.musicSource != null)
+            Conductor.Instance.ResumeSong();
+        isTransitioning = false;
+    }
 
     private IEnumerator FadePauseMenu(float targetAlpha, bool isOpening)
     {
@@ -97,7 +134,6 @@ public class PauseManager : MonoBehaviour
         }
 
         canvasGroup.alpha = targetAlpha;
-
         if (!isOpening)
         {
             pausePanel.SetActive(false);

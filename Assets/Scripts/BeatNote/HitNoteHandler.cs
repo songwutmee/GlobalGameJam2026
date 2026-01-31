@@ -13,6 +13,11 @@ public class HitNoteHandler : MonoBehaviour
     [SerializeField] float revertDelay = 0.5f;
     [SerializeField] GameObject vfxPerfectHitObject;
     [SerializeField] GameObject vfxHitObject;
+    [SerializeField] GameObject vfxHitHealingObject;
+    [SerializeField] GameObject vfxHitBombObject;
+    [SerializeField] SoundData hitsound;
+    [SerializeField] SoundData missSound;
+
     private Coroutine revertCoroutine;
 
     private void Start()
@@ -26,12 +31,18 @@ public class HitNoteHandler : MonoBehaviour
         NoteEvents.OnNoteHit += NoteHitUpdate;
         NoteEvents.OnNotePerfectHit += NotePerfectHitUpdate;
         NoteEvents.OnNoteMiss += NoteMissUpdate;
+        NoteEvents.OnHealingNoteHit += HealNoteHitUpdate;
+        NoteEvents.OnBombHit += BombNoteHitUpdate;
+        NoteEvents.OnNoteEarlyHit += NoteMissUpdate;
     }
     private void OnDisable()
     {
         NoteEvents.OnNoteHit -= NoteHitUpdate;
         NoteEvents.OnNotePerfectHit -= NotePerfectHitUpdate;
         NoteEvents.OnNoteMiss -= NoteMissUpdate;
+        NoteEvents.OnHealingNoteHit -= HealNoteHitUpdate;
+        NoteEvents.OnBombHit -= BombNoteHitUpdate;
+        NoteEvents.OnNoteEarlyHit -= NoteMissUpdate;
     }
 
     private void NoteHitUpdate(int lane)
@@ -42,6 +53,7 @@ public class HitNoteHandler : MonoBehaviour
         GameObject vfxInstance = Instantiate(vfxHitObject, transform.position, Quaternion.identity);
         Destroy(vfxInstance, 1f);
         ChangeBackMaterial();
+        AudioManager.Instance.PlaySound(hitsound);
     }
 
     private void NotePerfectHitUpdate(int lane)
@@ -52,6 +64,32 @@ public class HitNoteHandler : MonoBehaviour
         GameObject vfxInstance = Instantiate(vfxPerfectHitObject, transform.position, Quaternion.identity);
         Destroy(vfxInstance, 1f);
         ChangeBackMaterial();
+        AudioManager.Instance.PlaySound(hitsound);
+
+    }
+
+    private void HealNoteHitUpdate(int lane, float amount)
+    {
+        if (originalLane != lane)
+            return;
+        hitLaneMaterial.color = hitMaterial.color;
+        GameObject vfxInstance = Instantiate(vfxHitHealingObject, transform.position, Quaternion.identity);
+        Destroy(vfxInstance, 1f);
+        ChangeBackMaterial();
+        AudioManager.Instance.PlaySound(hitsound);
+
+    }
+
+    private void BombNoteHitUpdate(int lane)
+    {
+        if (originalLane != lane)
+            return;
+        hitLaneMaterial.color = hitMaterial.color;
+        GameObject vfxInstance = Instantiate(vfxHitBombObject, transform.position, Quaternion.identity);
+        Destroy(vfxInstance, 1f);
+        ChangeBackMaterial();
+        AudioManager.Instance.PlaySound(missSound);
+
     }
 
     private void NoteMissUpdate(int lane)
@@ -60,6 +98,8 @@ public class HitNoteHandler : MonoBehaviour
             return;
         hitLaneMaterial.color = missMaterial.color;
         ChangeBackMaterial();
+        AudioManager.Instance.PlaySound(missSound);
+
     }
 
     private void ChangeBackMaterial()
