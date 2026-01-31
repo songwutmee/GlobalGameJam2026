@@ -29,7 +29,6 @@ public class NoteSpawner : MonoBehaviour
     private double dspSongStartTime;
     private int[] weightTable = new int[100];
 
-    private bool isEnterNewPhase = false;
 
     void Start()
     {
@@ -60,7 +59,6 @@ public class NoteSpawner : MonoBehaviour
 
     private void HandlePhaseChange(int phase)
     {
-        isEnterNewPhase = true;
 
         currentTravelTime = noteTravelTime - (phase - 1) * 0.4f;
 
@@ -78,7 +76,6 @@ public class NoteSpawner : MonoBehaviour
 
     void Update()
     {
-        if (isEnterNewPhase) return;
 
         if (!musicStarted || Conductor.Instance == null) return;
 
