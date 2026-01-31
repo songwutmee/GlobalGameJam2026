@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 09c74857a8134dc479f31c14a5f2554a
+guid: acf5dfeb2fa03c04eb9bb775177a5a7b
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,33 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Enemy
-    second: {fileID: 2100000, guid: 6642d54258cbb1845901a1e547802155, type: 2}
+      name: Cloth
+    second: {fileID: 2100000, guid: 8f328005962b80a46b47153a32b5d1bb, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Fade_2
-    second: {fileID: 2100000, guid: 99eaf0ff822c8dc4fafca33a3c53a014, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Fade_3
-    second: {fileID: 2100000, guid: a45bc0e31c6eb7842a20e7086656b29a, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Enemy_01
-    second: {fileID: 2800000, guid: 2830f22e5b72fd74dba2b68ada628f14, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Enemy_Fade2
-    second: {fileID: 2800000, guid: 6547cf18757cc214c85aa9159df2e7f6, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Test
-    second: {fileID: 2800000, guid: 69680e2b64ddd5248be27098d039fddb, type: 3}
+      name: Player.001
+    second: {fileID: 2100000, guid: 4b5e66fe5966c88499a8f0ca0431c3fa, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -61,36 +41,7 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: Fade1_to_Fade2
-      takeName: rig|rigAction
-      internalID: 3374748389425109202
-      firstFrame: 0
-      lastFrame: 94
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+    clipAnimations: []
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -158,7 +109,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0

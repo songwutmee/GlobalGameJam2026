@@ -1,39 +1,9 @@
 fileFormatVersion: 2
-guid: 09c74857a8134dc479f31c14a5f2554a
+guid: 3cbac728e015e964dbc61350542f96c4
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Enemy
-    second: {fileID: 2100000, guid: 6642d54258cbb1845901a1e547802155, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Fade_2
-    second: {fileID: 2100000, guid: 99eaf0ff822c8dc4fafca33a3c53a014, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Fade_3
-    second: {fileID: 2100000, guid: a45bc0e31c6eb7842a20e7086656b29a, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Enemy_01
-    second: {fileID: 2800000, guid: 2830f22e5b72fd74dba2b68ada628f14, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Enemy_Fade2
-    second: {fileID: 2800000, guid: 6547cf18757cc214c85aa9159df2e7f6, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Test
-    second: {fileID: 2800000, guid: 69680e2b64ddd5248be27098d039fddb, type: 3}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -63,11 +33,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Fade1_to_Fade2
+      name: rig|rigAction
       takeName: rig|rigAction
       internalID: 3374748389425109202
       firstFrame: 0
-      lastFrame: 94
+      lastFrame: 44
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -158,7 +128,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
