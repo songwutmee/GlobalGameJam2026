@@ -13,7 +13,7 @@ ModelImporter:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: bar_Base_color_1001
-    second: {fileID: 2800000, guid: d3d4d0011a7617342b2f826c4c2901d7, type: 3}
+    second: {fileID: 2800000, guid: c42e17b5f242d7c429b2987b9a987f32, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

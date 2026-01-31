@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: SoData
   m_EditorClassIdentifier: Assembly-CSharp::SongData
-  musicClip: {fileID: 8300000, guid: 943b1954cf80c8d4c88db692b6d84601, type: 3}
+  musicClip: {fileID: 8300000, guid: b8860f48b9d31154d8e3d115cf4ada75, type: 3}
   bpm: 104.99992
   firstBeatOffset: 0
   notes:

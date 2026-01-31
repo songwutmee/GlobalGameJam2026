@@ -1,4 +1,12 @@
+using System;
+using System.Collections;
 using UnityEngine;
+
+public enum gameState
+{
+    WIN,
+    LOSE,
+}
 
 public class BattleManager : MonoBehaviour
 {
@@ -6,7 +14,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private CharacterStats playerStats;
     [SerializeField] private CharacterStats currentEnemyStats;
 
-    [Header("Damage Settings")]
+    [Header("Damage Settings")] 
     [SerializeField] private float damageToEnemyNormal = 10f;
     [SerializeField] private float damageToEnemyPerfect = 20f;
     [SerializeField] private float damageNoteToPlayer = 15f;
@@ -15,6 +23,8 @@ public class BattleManager : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private GameObject winUI;  
     [SerializeField] private GameObject loseUI; 
+
+    public static event Action<gameState> OnGameStateChanged;
 
     private bool isGameOver = false;
 
@@ -107,7 +117,7 @@ public class BattleManager : MonoBehaviour
             isGameOver = true;
             Debug.Log("<color=green>[BATTLE] Victory!</color>");
             if (winUI != null) winUI.SetActive(true);
-            
+            OnGameStateChanged?.Invoke(gameState.WIN);
             // stio music when win
             StopMusic();
         }
@@ -120,8 +130,11 @@ public class BattleManager : MonoBehaviour
             isGameOver = true;
             // Debug.Log("<color=red>[BATTLE] Player Defeated!</color>");
             if (loseUI != null) loseUI.SetActive(true);
-            
+
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
             // stop music when lose
+            OnGameStateChanged?.Invoke(gameState.LOSE);
             StopMusic();
         }
     }
@@ -133,6 +146,7 @@ public class BattleManager : MonoBehaviour
             Conductor.Instance.musicSource.Stop();
         }
     }
+
 }
 
 public static class BattleEvents {

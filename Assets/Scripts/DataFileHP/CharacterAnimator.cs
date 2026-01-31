@@ -7,7 +7,6 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnEnable()
     {
-       
         if (isPlayer)
         {
             BattleEvents.OnPlayerAttack += HandlePlayerAttack;
@@ -22,14 +21,11 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnDisable()
     {
-        
         BattleEvents.OnPlayerAttack -= HandlePlayerAttack;
         BattleEvents.OnPlayerHurt -= HandlePlayerHurt;
         BattleEvents.OnEnemyAttack -= HandleEnemyAttack;
         BattleEvents.OnEnemyHurt -= HandleEnemyHurt;
     }
-
-    // --- Named Methods ---
 
     private void HandlePlayerAttack(bool isPerfect)
     {
@@ -45,12 +41,18 @@ public class CharacterAnimator : MonoBehaviour
 
     private void HandleEnemyAttack()
     {
+        // หากอยู่ในช่วงเปลี่ยน Phase บอสจะไม่เล่นท่าโจมตีปกติ
+        if (BossPhaseSequencer.IsCinematicActive) return;
+
         if (animator == null) return;
         animator.SetTrigger("Attack");
     }
 
     private void HandleEnemyHurt()
     {
+        // หากอยู่ในช่วงเปลี่ยน Phase บอสจะไม่เล่นท่าเจ็บ (Hurt) เพื่อให้แอนิเมชัน Phase เล่นจนจบ
+        if (BossPhaseSequencer.IsCinematicActive) return;
+
         if (animator == null) return;
         animator.SetTrigger("Hurt");
     }

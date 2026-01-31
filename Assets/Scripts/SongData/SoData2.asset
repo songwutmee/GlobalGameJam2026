@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: SoData 2
+  m_Name: SoData2
   m_EditorClassIdentifier: Assembly-CSharp::SongData
-  musicClip: {fileID: 8300000, guid: 943b1954cf80c8d4c88db692b6d84601, type: 3}
+  musicClip: {fileID: 8300000, guid: 9ec14ba6d3a5efc409849ea4e2440a4a, type: 3}
   bpm: 104.99992
   firstBeatOffset: 0
   notes:

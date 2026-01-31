@@ -6,26 +6,52 @@ public class PauseManager : MonoBehaviour
 {
     [SerializeField] private TMPro.TextMeshProUGUI countdownText;
     public GameObject pausePanel;
-    [SerializeField] private float fadeDuration = 0.3f; 
-    [SerializeField] private string mainMenuSceneName = "MainMenu"; // ตั้งชื่อฉากเมนูหลักที่นี่
+    [SerializeField] private float fadeDuration = 0.3f;
+    [SerializeField] private string mainMenuSceneName = "MainMenu";
     private bool isPaused = false;
     private bool isTransitioning = false;
-    
+
     private CanvasGroup canvasGroup;
     private Coroutine fadeCoroutine;
 
+    private bool gameEnded = false;
+
+    void OnEnable()
+    {
+        BattleManager.OnGameStateChanged += HandleGameStateChanged;
+    }
+
+    void OnDisable()
+    {
+        BattleManager.OnGameStateChanged -= HandleGameStateChanged;
+    }
+
+    void HandleGameStateChanged(gameState state)
+    {
+        gameEnded = true;
+
+        if (isPaused)
+        {
+            StopAllCoroutines();
+            Time.timeScale = 1f;
+            pausePanel.SetActive(false);
+            isPaused = false;
+        }
+    }
+
     void Awake()
     {
+        if (gameEnded) return;
         canvasGroup = pausePanel.GetComponent<CanvasGroup>();
         if (canvasGroup == null) canvasGroup = pausePanel.AddComponent<CanvasGroup>();
-        
+
         canvasGroup.alpha = 0f;
         pausePanel.SetActive(false);
     }
 
     void Update()
     {
-        if (isTransitioning) return;
+        if (isTransitioning || gameEnded) return;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused) Resume();
@@ -35,31 +61,22 @@ public class PauseManager : MonoBehaviour
 
     public void Resume()
     {
-        if (isTransitioning) return;
-        StartCoroutine(ResumeCountdown());
+        // if (isTransitioning || gameEnded || isPaused) return;
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
-        
-        isPaused = false;
-        Time.timeScale = 1f; 
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-
-        if (Conductor.Instance != null && Conductor.Instance.musicSource != null)
-            Conductor.Instance.musicSource.UnPause();
-
-        fadeCoroutine = StartCoroutine(FadePauseMenu(0f, false));
+        StartCoroutine(ResumeCountdown());
     }
 
     public void Pause()
     {
+        // if (isTransitioning || gameEnded || !isPaused) return;
         pausePanel.SetActive(true);
         Time.timeScale = 0f;
         isPaused = true;
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
 
         isPaused = true;
-        Time.timeScale = 0f; 
+        Time.timeScale = 0f;
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -94,30 +111,35 @@ public class PauseManager : MonoBehaviour
     private IEnumerator ResumeCountdown()
     {
         isTransitioning = true;
+
+        // 1. Hide the Pause Menu visually first
+        if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
+        yield return StartCoroutine(FadePauseMenu(0f, false));
+
+        // 2. Start Countdown
         countdownText.gameObject.SetActive(true);
-
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-
-        Time.timeScale = 0f;
-        pausePanel.SetActive(false);
-
         for (int i = 3; i > 0; i--)
         {
             countdownText.text = i.ToString();
+            // Realtime is required because timeScale is 0
             yield return new WaitForSecondsRealtime(1f);
         }
 
         countdownText.text = "GO!";
         yield return new WaitForSecondsRealtime(0.5f);
-
         countdownText.gameObject.SetActive(false);
 
-        Time.timeScale = 1f;
+        // 3. NOW we unfreeze everything at the exact same time
         isPaused = false;
+        Time.timeScale = 1f;
 
-        if (Conductor.Instance != null && Conductor.Instance.musicSource != null)
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        // Resume the song logic and audio
+        if (Conductor.Instance != null)
             Conductor.Instance.ResumeSong();
+
         isTransitioning = false;
     }
 

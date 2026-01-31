@@ -2,21 +2,19 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-// เปลี่ยนชื่อจาก TimedObjectAction เป็น PhaseTimedHide
 [System.Serializable]
 public struct PhaseTimedHide {
     public GameObject targetObject;
     public float hideAtSecond; 
 }
 
-// เปลี่ยนชื่อจาก BossPhaseSettings เป็น UniquePhaseData เพื่อหนี Error ชื่อซ้ำ
 [System.Serializable]
 public struct UniquePhaseData {
     public string phaseName;
-    public SongData phaseSongData;      // สังเกตชื่อตรงนี้
-    public AudioClip phaseMusic;        // สังเกตชื่อตรงนี้
-    public string animationTrigger;     // สังเกตชื่อตรงนี้
-    public float showDuration;          // สังเกตชื่อตรงนี้
+    public SongData phaseSongData;      
+    public AudioClip phaseMusic;        
+    public string animationTrigger;     
+    public float showDuration;          
     
     [Header("Visual Phase Items")]
     public GameObject maskToShow; 
@@ -27,12 +25,15 @@ public struct UniquePhaseData {
 
 public class BossPhaseSequencer : MonoBehaviour
 {
+    // ตัวแปร Static สำหรับตรวจสอบสถานะการเล่น Cinematic (ใช้ Lock Animation)
+    public static bool IsCinematicActive { get; private set; }
+
     [Header("Phase 1 Setup")]
     public List<GameObject> phase1HideImmediately;
     public GameObject phase1Mask;
 
     [Header("Phase Configuration (Phase 2 & 3)")]
-    public List<UniquePhaseData> phaseSettings; // ใช้ชื่อใหม่แล้ว
+    public List<UniquePhaseData> phaseSettings; 
 
     [Header("References")]
     public BossCameraController cameraController;
@@ -41,6 +42,7 @@ public class BossPhaseSequencer : MonoBehaviour
     public Animator bossAnimator;
 
     void Start() {
+        IsCinematicActive = false;
         if (phase1Mask != null) phase1Mask.SetActive(true);
         foreach (var obj in phase1HideImmediately) if(obj != null) obj.SetActive(false);
     }
@@ -56,7 +58,9 @@ public class BossPhaseSequencer : MonoBehaviour
     }
 
     private IEnumerator ExecuteTransition(UniquePhaseData settings, int phaseNum) {
-        Debug.Log($"<color=orange>[Sequencer]</color> Starting Phase {phaseNum}");
+        // เริ่มต้นการ Lock
+        IsCinematicActive = true; 
+        Debug.Log($"<color=orange>[Sequencer]</color> Starting Phase {phaseNum} - Animation Locked");
 
         noteSpawner.StopSpawner(); 
         musicSource.Stop();
@@ -64,9 +68,11 @@ public class BossPhaseSequencer : MonoBehaviour
         if (settings.maskToShow != null) settings.maskToShow.SetActive(true);
         foreach (var obj in settings.objectsToHideImmediately) if(obj != null) obj.SetActive(false);
 
+        // เล่น Animation เปลี่ยน Phase ทันที
         if (bossAnimator != null && !string.IsNullOrEmpty(settings.animationTrigger))
             bossAnimator.SetTrigger(settings.animationTrigger);
 
+        // รอตามเวลาที่ตั้งไว้ก่อนเริ่มแพนกล้อง
         yield return new WaitForSeconds(settings.timeBeforeCameraPan);
 
         if (cameraController != null) cameraController.ShowBossCamera(phaseNum, settings.showDuration);
@@ -85,6 +91,7 @@ public class BossPhaseSequencer : MonoBehaviour
             yield return null;
         }
 
+        // รอช่วงพัก 1.5 วิ ก่อนเริ่มเกมต่อ
         yield return new WaitForSeconds(1.5f);
 
         if (settings.phaseSongData != null) {
@@ -92,5 +99,9 @@ public class BossPhaseSequencer : MonoBehaviour
             musicSource.clip = settings.phaseMusic;
             noteSpawner.RestartSpawnerWithNewData();
         }
+
+        // ปลดล็อคเมื่อทุกอย่างเสร็จสิ้น
+        IsCinematicActive = false;
+        Debug.Log("<color=green>[Sequencer]</color> Transition Finished - Animation Unlocked");
     }
 }
