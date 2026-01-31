@@ -33,6 +33,7 @@ public class HitNoteHandler : MonoBehaviour
         NoteEvents.OnNoteMiss += NoteMissUpdate;
         NoteEvents.OnHealingNoteHit += HealNoteHitUpdate;
         NoteEvents.OnBombHit += BombNoteHitUpdate;
+        NoteEvents.OnNoteEarlyHit += NoteMissUpdate;
     }
     private void OnDisable()
     {
@@ -41,6 +42,7 @@ public class HitNoteHandler : MonoBehaviour
         NoteEvents.OnNoteMiss -= NoteMissUpdate;
         NoteEvents.OnHealingNoteHit -= HealNoteHitUpdate;
         NoteEvents.OnBombHit -= BombNoteHitUpdate;
+        NoteEvents.OnNoteEarlyHit -= NoteMissUpdate;
     }
 
     private void NoteHitUpdate(int lane)

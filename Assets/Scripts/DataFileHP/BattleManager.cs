@@ -40,6 +40,7 @@ public class BattleManager : MonoBehaviour
         NoteEvents.OnNoteMiss += HandleNoteMiss;
         NoteEvents.OnBombHit += HandleBombHit;
         NoteEvents.OnHealingNoteHit += HandleHealingNoteHit;
+        NoteEvents.OnNoteEarlyHit += HandleNoteMiss;
     }
 
     private void OnDisable()
@@ -49,6 +50,7 @@ public class BattleManager : MonoBehaviour
         NoteEvents.OnNoteMiss -= HandleNoteMiss;
         NoteEvents.OnBombHit -= HandleBombHit;
         NoteEvents.OnHealingNoteHit -= HandleHealingNoteHit;
+        NoteEvents.OnNoteEarlyHit -= HandleNoteMiss;
     }
 
     private void HandleNoteHit(int lane)
