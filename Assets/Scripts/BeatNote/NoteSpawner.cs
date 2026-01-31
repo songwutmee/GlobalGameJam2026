@@ -29,7 +29,6 @@ public class NoteSpawner : MonoBehaviour
     private double dspSongStartTime;
     private int[] weightTable = new int[100];
 
-
     void Start()
     {
         currentTravelTime = noteTravelTime;
