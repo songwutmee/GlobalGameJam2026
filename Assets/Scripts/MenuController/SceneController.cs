@@ -5,14 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
-   //For start in mainmenu
-    public void LoadScene(string sceneName)
+    [Header("Configuration")]
+    public string mainMenuSceneName = "MainMenu";
+    public string gameSceneName = "MainGame";
+
+    public void PlayGame()
     {
-        Time.timeScale = 1f; 
-        SceneManager.LoadScene(sceneName);
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(gameSceneName);
     }
 
-    //for restart current scene
     public void RestartCurrentScene()
     {
         Time.timeScale = 1f;
@@ -20,7 +22,22 @@ public class SceneController : MonoBehaviour
         SceneManager.LoadScene(currentSceneName);
     }
 
-    //for exit button
+    public void BackToMainMenu()
+    {
+        Time.timeScale = 1f;
+
+        if (Conductor.Instance != null && Conductor.Instance.musicSource != null)
+        {
+            Conductor.Instance.musicSource.Stop();
+        }
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        Debug.Log("Returning to Main Menu...");
+        SceneManager.LoadScene(mainMenuSceneName);
+    }
+
     public void QuitGame()
     {
         Debug.Log("Quitting Game...");

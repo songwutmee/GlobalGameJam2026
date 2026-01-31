@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement; // เพิ่มเพื่อใช้โหลดฉาก
 
 public class PauseManager : MonoBehaviour
 {
     public GameObject pausePanel;
-    [SerializeField] private float fadeDuration = 0.3f; // ปรับความเร็วในการ Fade ตรงนี้
+    [SerializeField] private float fadeDuration = 0.3f; 
+    [SerializeField] private string mainMenuSceneName = "MainMenu"; // ตั้งชื่อฉากเมนูหลักที่นี่
     
     private CanvasGroup canvasGroup;
     private bool isPaused = false;
@@ -12,11 +14,9 @@ public class PauseManager : MonoBehaviour
 
     void Awake()
     {
-        // ตรวจสอบและดึง CanvasGroup (ถ้าไม่มีให้แอดเพิ่มอัตโนมัติ)
         canvasGroup = pausePanel.GetComponent<CanvasGroup>();
         if (canvasGroup == null) canvasGroup = pausePanel.AddComponent<CanvasGroup>();
         
-        // เริ่มต้นด้วยการซ่อน UI
         canvasGroup.alpha = 0f;
         pausePanel.SetActive(false);
     }
@@ -35,16 +35,14 @@ public class PauseManager : MonoBehaviour
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
         
         isPaused = false;
-        Time.timeScale = 1f; // กลับมาเดินเวลาปกติทันที
+        Time.timeScale = 1f; 
 
-        // ซ่อนเมาส์
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
         if (Conductor.Instance != null && Conductor.Instance.musicSource != null)
             Conductor.Instance.musicSource.UnPause();
 
-        // Fade Out UI ออกไป
         fadeCoroutine = StartCoroutine(FadePauseMenu(0f, false));
     }
 
@@ -53,18 +51,37 @@ public class PauseManager : MonoBehaviour
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
 
         isPaused = true;
-        Time.timeScale = 0f; // หยุดเกมทันที
+        Time.timeScale = 0f; 
 
-        // แสดงเมาส์
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
         if (Conductor.Instance != null && Conductor.Instance.musicSource != null)
             Conductor.Instance.musicSource.Pause();
 
-        // Fade In UI ขึ้นมา
         pausePanel.SetActive(true);
         fadeCoroutine = StartCoroutine(FadePauseMenu(1f, true));
+    }
+
+    // --- ฟังก์ชันใหม่สำหรับปุ่ม Back to Main Menu ---
+    public void BackToMainMenu()
+    {
+        // 1. คืนเวลาให้โลกปกติ (สำคัญมาก ถ้าไม่ทำเมนูหลักจะค้าง)
+        Time.timeScale = 1f;
+
+        // 2. ปลดล็อคเมาส์ให้กดเมนูได้
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        // 3. หยุดเพลงทันที
+        if (Conductor.Instance != null && Conductor.Instance.musicSource != null)
+        {
+            Conductor.Instance.musicSource.Stop();
+        }
+
+        // 4. โหลดฉากเมนู
+        Debug.Log("Exiting to Main Menu...");
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 
     private IEnumerator FadePauseMenu(float targetAlpha, bool isOpening)
@@ -72,7 +89,6 @@ public class PauseManager : MonoBehaviour
         float startAlpha = canvasGroup.alpha;
         float time = 0;
 
-        // สำคัญ: ใช้ Time.unscaledDeltaTime เพื่อให้ทำงานได้ตอน Time.timeScale = 0
         while (time < fadeDuration)
         {
             time += Time.unscaledDeltaTime;
@@ -82,7 +98,6 @@ public class PauseManager : MonoBehaviour
 
         canvasGroup.alpha = targetAlpha;
 
-        // ถ้าเป็นการ Resume และ Fade Out จนจบแล้ว ให้ปิด Object ไปเลย
         if (!isOpening)
         {
             pausePanel.SetActive(false);
