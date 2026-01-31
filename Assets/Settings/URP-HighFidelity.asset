@@ -26,7 +26,11 @@ MonoBehaviour:
   m_SupportsHDR: 1
   m_HDRColorBufferPrecision: 0
   m_MSAA: 4
+<<<<<<< Updated upstream
   m_RenderScale: 0.59
+=======
+  m_RenderScale: 0.21
+>>>>>>> Stashed changes
   m_UpscalingFilter: 0
   m_FsrOverrideSharpness: 0
   m_FsrSharpness: 0.92
