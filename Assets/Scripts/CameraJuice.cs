@@ -9,17 +9,16 @@ public class CameraJuice : MonoBehaviour
 
     private void OnEnable()
     {
-        // แก้ไข: ใช้ Named Method แทน Lambda เพื่อให้ Unsubscribe ได้จริง
-        NoteObject.OnNoteHit += HandleHit;
-        NoteObject.OnNoteHitPerfect += HandlePerfect;
-        NoteObject.OnNoteMiss += HandleMiss;
+        NoteEvents.OnNoteHit += HandleHit;
+        NoteEvents.OnNotePerfectHit += HandlePerfect;
+        NoteEvents.OnNoteMiss += HandleMiss;
     }
 
     private void OnDisable()
     {
-        NoteObject.OnNoteHit -= HandleHit;
-        NoteObject.OnNoteHitPerfect -= HandlePerfect;
-        NoteObject.OnNoteMiss -= HandleMiss;
+        NoteEvents.OnNoteHit -= HandleHit;
+        NoteEvents.OnNotePerfectHit -= HandlePerfect;
+        NoteEvents.OnNoteMiss -= HandleMiss;
     }
 
     private void Start() => originalPos = transform.localPosition;
@@ -31,7 +30,6 @@ public class CameraJuice : MonoBehaviour
 
     public void StartShake(float intensity, float duration)
     {
-        // เช็คว่า Object ยังมีตัวตนอยู่ไหมก่อนรัน Coroutine
         if (this == null || !gameObject.activeInHierarchy) return;
 
         if (shakeCoroutine != null) StopCoroutine(shakeCoroutine);
@@ -43,7 +41,6 @@ public class CameraJuice : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < duration)
         {
-            // ป้องกัน Error กรณี Object ถูกทำลายระหว่างที่กำลังสั่น
             if (this == null) yield break;
 
             transform.localPosition = originalPos + (Vector3)Random.insideUnitCircle * intensity;
