@@ -11,6 +11,7 @@ public class HealthBarUpdater : MonoBehaviour
         if (stats != null) 
         {
             stats.OnHpChanged += UpdateUI;
+
             UpdateUI(stats.currentHp, stats.maxHp);
         }
     }
