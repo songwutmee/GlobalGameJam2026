@@ -13,5 +13,5 @@ public class SongData : ScriptableObject {
     public AudioClip musicClip;
     public float bpm;
     public float firstBeatOffset;
-    public List<NoteInfo> notes = new List<NoteInfo>(); //data of notes will be hereผ
+    public List<NoteInfo> notes = new List<NoteInfo>(); 
 }

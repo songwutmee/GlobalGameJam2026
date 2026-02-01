@@ -29,7 +29,7 @@ public class HealthBarUpdater : MonoBehaviour
             slider.maxValue = max; 
             slider.value = cur; 
 
-            Debug.Log($"HP Update: {cur}/{max} -> Slider Value: {slider.value}");
+            // Debug.Log($"HP Update: {cur}/{max} -> Slider Value: {slider.value}");
         }
     }
 }

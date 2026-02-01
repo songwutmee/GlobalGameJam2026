@@ -3,7 +3,22 @@ guid: 163fede8d4d5ab7448154abab30237b1
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Enemy_01
+    second: {fileID: 2800000, guid: 396fa4fd8dc3e1b4094bc37c6fc5a61e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Enemy_Fade2
+    second: {fileID: 2800000, guid: 1e486c208dca3f94aa820fda78cf26a9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Test
+    second: {fileID: 2800000, guid: 84fa28c03f9f36d45b470a89ed4568cc, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -5,14 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
-    [Header("Configuration")]
+    [Header("Scene Names")]
     public string mainMenuSceneName = "MainMenu";
+    public string introSceneName = "IntroScene"; // เพิ่มตัวแปรฉาก Intro
     public string gameSceneName = "MainGame";
 
+    // ฟังก์ชันสำหรับปุ่ม Play ในหน้า MainMenu
     public void PlayGame()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(gameSceneName);
+        Time.timeScale = 1f; // บังคับเวลาให้เดิน
+        SceneManager.LoadScene(introSceneName); // โหลดไป Intro ก่อน
     }
 
     public void RestartCurrentScene()
@@ -25,22 +27,17 @@ public class SceneController : MonoBehaviour
     public void BackToMainMenu()
     {
         Time.timeScale = 1f;
-
         if (Conductor.Instance != null && Conductor.Instance.musicSource != null)
         {
             Conductor.Instance.musicSource.Stop();
         }
-
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-
-        Debug.Log("Returning to Main Menu...");
         SceneManager.LoadScene(mainMenuSceneName);
     }
 
     public void QuitGame()
     {
-        Debug.Log("Quitting Game...");
         Application.Quit();
     }
 }

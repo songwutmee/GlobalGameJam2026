@@ -15,16 +15,20 @@ public class Conductor : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        // บังคับให้เป็นตัวปัจจุบันเสมอ
+        Debug.Log("Conductor Awake called.");
+        Instance = this;
+        Time.timeScale = 1f;
+        totalPausedTime = 0;
     }
 
-    void Start()
+    // ฟังก์ชันสำหรับ Spawner เรียกใช้เพื่อ Reset เวลาให้ตรงกัน
+    public void SetBaseline(float startTime)
     {
-        if (songData == null) return;
-        musicSource.clip = songData.musicClip;
-        dspSongTime = (float)AudioSettings.dspTime;
-        musicSource.Play();
+        dspSongTime = startTime;
+        totalPausedTime = 0;
+        songPositionSeconds = 0;
+        isPaused = false;
     }
 
     public void PauseSong()
@@ -37,15 +41,16 @@ public class Conductor : MonoBehaviour
     public void ResumeSong()
     {
         isPaused = false;
-        // Calculate how long we were paused and add it to the offset
         totalPausedTime += (AudioSettings.dspTime - pauseStartTime);
         musicSource.UnPause();
     }
+
     void Update()
     {
-        if (musicSource.isPlaying)
+        if (musicSource != null && musicSource.isPlaying && !isPaused)
         {
-            // เวลาปัจจุบัน = (เวลาจริง - เวลาเริ่ม) - ค่าชดเชย
+            Debug.Log("Conductor Update calculating song position.");
+            // คำนวณเวลาที่แม่นยำที่สุด
             songPositionSeconds = (float)(AudioSettings.dspTime - dspSongTime - totalPausedTime) - songData.firstBeatOffset;
         }
     }
