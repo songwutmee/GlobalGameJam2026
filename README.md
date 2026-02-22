@@ -8,9 +8,9 @@
 
 </div>
 
-### 📖 Game Concept
+###  Game Concept
 VeilTempo is a fast-paced rhythm game developed in 48 hours for **Global Game Jam 2026** at Game Dev Hub. VeilTempo is rhythm game where got stole identity by the mask.As the protagonist,they must claim the three mask before losing themself
-### 🛠 Technical Work
+### Technical Work
 As the  Programmer, I focused on building a solid foundation that could handle high-speed rhythm mechanics and make it easy for the team to create content:
 
 - **Custom Chart Tooling:** I built a system to read MIDI files and convert them into JSON data. This allowed us to generate note charts automatically, saving a massive amount of time that would have been spent placing notes by hand.
