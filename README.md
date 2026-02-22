@@ -22,3 +22,6 @@ As the  Programmer, I focused on building a solid foundation that could handle h
 This project was a collaborative effort by a team of 7 passionate creators during a 48-hour jam session at Game Dev hub:
 - **Programmer (Me):** Responsible for the technical architecture, MIDI-to-JSON pipeline, and core rhythm systems.
 - **Artists & Designers:** Handled the 3D assets, environmental storytelling, and mask designs. We worked closely onsite to make sure the visual feedback matched the music perfectly.
+
+## Play the Game
+[Play VeilTempo on Itch.io](https://songwutlyhnn.itch.io/veiltempo)
