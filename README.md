@@ -25,7 +25,7 @@ As the  Programmer, I focused on building a solid foundation that could handle h
 
 ### Team & Event
 This project was a collaborative effort by a team of 7 passionate creators during a 48-hour jam session at Game Dev hub:
-- **Programmer (Me):** Responsible for the technical architecture, MIDI-to-JSON pipeline, and core rhythm systems.
+- **Programmer (Songwut&Pongkun):** Responsible for the technical architecture, MIDI-to-JSON pipeline, and core rhythm systems.
 - **Artists & Designers:** Handled the 3D assets, environmental storytelling, and mask designs. We worked closely onsite to make sure the visual feedback matched the music perfectly.
 
 ## Play the Game
